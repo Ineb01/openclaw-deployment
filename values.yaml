@@ -1,4 +1,43 @@
 app-template:
+  controllers:
+    main:
+      containers:
+        main:
+          env:
+            - name: CHROMIUM_FLAGS
+              value: "--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-accelerated-2d-canvas --no-first-run --no-zygote --disable-gpu --disable-software-rasterizer --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222"
+          probes:
+            liveness:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /
+                  port: 3080
+                initialDelaySeconds: 30
+                periodSeconds: 10
+                timeoutSeconds: 5
+                failureThreshold: 3
+            readiness:
+              enabled: true
+              custom: true
+              spec:
+                httpGet:
+                  path: /
+                  port: 3080
+                initialDelaySeconds: 15
+                periodSeconds: 5
+                timeoutSeconds: 3
+                failureThreshold: 3
+
+  service:
+    main:
+      ports:
+        http:
+          port: 3080
+        chromium:
+          port: 9222
+
   configMaps:
     config:
       data:
@@ -14,6 +53,15 @@ app-template:
               }
             }
           }
+
+  persistence:
+    dshm:
+      enabled: true
+      type: emptyDir
+      medium: Memory
+      sizeLimit: 2Gi
+      globalMounts:
+        - path: /dev/shm
 
   ingress:
     main:
