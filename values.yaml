@@ -1,0 +1,51 @@
+app-template:
+  configMaps:
+    config:
+      data:
+        openclaw.json: |
+          {
+            "browser": {
+              "enabled": true,
+              "defaultProfile": "openclaw",
+              "profiles": {
+                "openclaw": {
+                  "cdpUrl": "http://localhost:9222"
+                }
+              }
+            }
+          }
+
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - host: openclaw.cluster.dphx.eu
+          paths:
+            - path: /
+              pathType: Prefix
+              service:
+                name: openclaw
+                port: 3080
+      tls:
+        - hosts:
+            - openclaw.cluster.dphx.eu
+          secretName: openclaw-tls
+
+    chromium:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - host: chromium.cluster.dphx.eu
+          paths:
+            - path: /
+              pathType: Prefix
+              service:
+                name: openclaw
+                port: 9222
+      tls:
+        - hosts:
+            - chromium.cluster.dphx.eu
+          secretName: chromium-tls
