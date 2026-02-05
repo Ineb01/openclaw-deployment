@@ -21,17 +21,17 @@ app-template:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-prod
       hosts:
-        - host: librechat.cluster.dphx.eu
+        - host: openclaw.cluster.dphx.eu
           paths:
             - path: /
               pathType: Prefix
               service:
-                name: librechat
+                name: openclaw
                 port: 3080
       tls:
         - hosts:
-            - librechat.cluster.dphx.eu
-          secretName: librechat-tls
+            - openclaw.cluster.dphx.eu
+          secretName: openclaw-tls
 
     chromium:
       enabled: true
