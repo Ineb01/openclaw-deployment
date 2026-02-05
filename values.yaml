@@ -32,3 +32,20 @@ app-template:
         - hosts:
             - librechat.cluster.dphx.eu
           secretName: librechat-tls
+
+    chromium:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts:
+        - host: chromium.cluster.dphx.eu
+          paths:
+            - path: /
+              pathType: Prefix
+              service:
+                name: openclaw
+                port: 9222
+      tls:
+        - hosts:
+            - chromium.cluster.dphx.eu
+          secretName: chromium-tls
